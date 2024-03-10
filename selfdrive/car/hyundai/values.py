@@ -6,7 +6,7 @@ from typing import Dict, List, Optional, Set, Tuple, Union
 from cereal import car
 from panda.python import uds
 from openpilot.common.conversions import Conversions as CV
-from openpilot.selfdrive.car import dbc_dict
+from openpilot.selfdrive.car import dbc_dict, Angle_Rate_Limit
 from openpilot.selfdrive.car.docs_definitions import CarFootnote, CarHarness, CarInfo, CarParts, Column
 from openpilot.selfdrive.car.fw_query_definitions import FwQueryConfig, Request, p16
 
@@ -27,6 +27,10 @@ class CarControllerParams:
     self.STEER_STEP = 1  # 100 Hz
 
     if CP.carFingerprint in CANFD_CAR:
+       #  seen changing at
+      self.ANGLE_RATE_LIMIT_UP = AngleRateLimit(speed_bp=[0., 5., 15.], angle_v=[5., .8, .15])
+      self.ANGLE_RATE_LIMIT_DOWN = AngleRateLimit(speed_bp=[0., 5., 15.], angle_v=[5., 3.5, 0.4])
+     
       self.STEER_MAX = 270
       self.STEER_DRIVER_ALLOWANCE = 250
       self.STEER_DRIVER_MULTIPLIER = 2
