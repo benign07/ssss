@@ -233,7 +233,7 @@ class CarController:
       hda2_long = hda2 and self.CP.openpilotLongitudinalControl
 
       # steering control
-      can_sends.extend(hyundaicanfd.create_steering_messages(self.packer, self.CP, self.CAN, CC.enabled, apply_steer_req, CS.out.steeringPressed, apply_steer, apply_angle, self.lkas_max_torque 
+      can_sends.extend(hyundaicanfd.create_steering_messages(self.packer, self.CP, self.CAN, CC.enabled, apply_steer_req, CS.out.steeringPressed, apply_steer, apply_angle, self.lkas_max_torque, 
                                                              lateral_paused, blinking_icon))
 
       # prevent LFA from activating on HDA2 by sending "no lane lines detected" to ADAS ECU
