@@ -4,6 +4,7 @@
 [submodule "opendbc"]
   path = opendbc
   url = ../../nickfrey22/opendbc.git
+  branch = ev9
 [submodule "cereal"]
   path = cereal
   url = ../../sunnyhaibin/cereal.git
