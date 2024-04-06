@@ -266,7 +266,7 @@ class CarState(CarStateBase):
     if self.CP.enableBsm & self.CP.carFingerprint == CAR.KIA_EV9
       ret.leftBlindspot = cp.vl["BLINDSPOTS_REAR_CORNERS"]["FL_INDICATOR_ALT"] != 0
       ret.rightBlindspot = cp.vl["BLINDSPOTS_REAR_CORNERS"]["FR_INDICATOR_ALT"] != 0   
-    elif self.CP.enableBsm:
+    else self.CP.enableBsm:
       ret.leftBlindspot = cp.vl["BLINDSPOTS_REAR_CORNERS"]["FL_INDICATOR"] != 0
       ret.rightBlindspot = cp.vl["BLINDSPOTS_REAR_CORNERS"]["FR_INDICATOR"] != 0
 
