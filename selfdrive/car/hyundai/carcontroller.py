@@ -153,7 +153,7 @@ class CarController:
     # applying torque when the driver is not actively steering.
     # The default value chosen here is based on observations of the stock LKAS system when it's engaged
     if not bool(CS.out.steeringPressed):
-      self.lkas_max_torque = 130
+      self.lkas_max_torque = 150
     else:
       # Steering torque seems to be a different scale than applied torque, so we calculate a percentage
       # based on observed "max" values (~|1200|) and then apply that percentage to our normal max torque
