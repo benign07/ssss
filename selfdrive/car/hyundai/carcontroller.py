@@ -158,7 +158,7 @@ class CarController:
       # Steering torque seems to be a different scale than applied torque, so we calculate a percentage
       # based on observed "max" values (~|1200|) and then apply that percentage to our normal max torque
       driver_applied_torque_pct = min(abs(CS.out.steeringTorque) / 1200.0, 1.0)
-      self.lkas_max_torque = 130 - (driver_applied_torque_pct * 130)
+      self.lkas_max_torque = 150 - (driver_applied_torque_pct * 130)
     
     if not CC.latActive:
       apply_angle = CS.out.steeringAngleDeg
