@@ -142,9 +142,9 @@ class CarController:
     apply_steer = apply_driver_steer_torque_limits(new_steer, self.apply_steer_last, CS.out.steeringTorque, self.params)
 
     # >90 degree steering fault prevention
-    #self.angle_limit_counter, apply_steer_req = common_fault_avoidance(abs(CS.out.steeringAngleDeg) >= MAX_ANGLE, CC.latActive,
-    #                                                                   self.angle_limit_counter, MAX_ANGLE_FRAMES,
-    #                                                                   MAX_ANGLE_CONSECUTIVE_FRAMES)
+    self.angle_limit_counter, apply_steer_req = common_fault_avoidance(abs(CS.out.steeringAngleDeg) >= MAX_ANGLE, CC.latActive,
+                                                                       self.angle_limit_counter, MAX_ANGLE_FRAMES,
+                                                                       MAX_ANGLE_CONSECUTIVE_FRAMES)
 
     apply_angle = apply_std_steer_angle_limits(actuators.steeringAngleDeg, self.apply_angle_last, CS.out.vEgoRaw, self.params)
 
@@ -153,12 +153,12 @@ class CarController:
     # applying torque when the driver is not actively steering.
     # The default value chosen here is based on observations of the stock LKAS system when it's engaged
     if not bool(CS.out.steeringPressed):
-      self.lkas_max_torque = 150
+      self.lkas_max_torque = 200
     else:
       # Steering torque seems to be a different scale than applied torque, so we calculate a percentage
       # based on observed "max" values (~|1200|) and then apply that percentage to our normal max torque
       driver_applied_torque_pct = min(abs(CS.out.steeringTorque) / 1200.0, 1.0)
-      self.lkas_max_torque = 150 - (driver_applied_torque_pct * 130)
+      self.lkas_max_torque = 200 - (driver_applied_torque_pct * 200)
     
     if not CC.latActive:
       apply_angle = CS.out.steeringAngleDeg
@@ -168,7 +168,7 @@ class CarController:
     self.apply_angle_last = apply_angle
 
     # Hold torque with induced temporary fault when cutting the actuation bit
-    torque_fault = CC.latActive #and not apply_steer_req
+    torque_fault = CC.latActive and not apply_steer_req
 
     self.apply_steer_last = apply_steer
 
@@ -233,7 +233,7 @@ class CarController:
       hda2_long = hda2 and self.CP.openpilotLongitudinalControl
 
       # steering control
-      can_sends.extend(hyundaicanfd.create_steering_messages(self.packer, self.CP, self.CAN, CC.enabled, CS.out.steeringPressed, apply_steer, apply_angle, self.lkas_max_torque, 
+      can_sends.extend(hyundaicanfd.create_steering_messages(self.packer, self.CP, self.CAN, CC.enabled, apply_steer_req, CS.out.steeringPressed, apply_steer, apply_angle, self.lkas_max_torque, 
                                                              lateral_paused, blinking_icon))
 
       # prevent LFA from activating on HDA2 by sending "no lane lines detected" to ADAS ECU
@@ -270,7 +270,7 @@ class CarController:
               if self.frame % 2 == 0:
                 can_sends.append(hyundaicanfd.create_buttons(self.packer, self.CP, self.CAN, ((self.frame // 2) + 1) % 0x10, self.cruise_button))
     else:
-      can_sends.append(hyundaican.create_lkas11(self.packer, self.frame, self.car_fingerprint, apply_steer,
+      can_sends.append(hyundaican.create_lkas11(self.packer, self.frame, self.car_fingerprint, apply_steer, apply_steer_req,
                                                 torque_fault, CS.lkas11, sys_warning, sys_state, CC.enabled,
                                                 hud_control.leftLaneVisible, hud_control.rightLaneVisible,
                                                 left_lane_warning, right_lane_warning,
